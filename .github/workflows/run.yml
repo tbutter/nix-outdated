@@ -32,3 +32,5 @@ jobs:
           name: result-txt
           path: result.txt
           if-no-files-found: error
+          archive: false
+
