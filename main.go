@@ -80,6 +80,8 @@ func main() {
 			os.Exit(1)
 		}
 
+		retry = 0
+
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading response body: %v\n", err)
