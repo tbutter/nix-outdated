@@ -45,7 +45,10 @@ jobs:
       - name: Send mail
         uses: dawidd6/action-send-mail@v16
         with:
-          connection_url: "${{secrets.MAIL_CONNECTION}}"
+          server_address: ${{secrets.MAIL_SERVER}}
+          server_port: 587
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
           subject: nix-outdated
           from: ${{vars.MAIL_FROM}}
           to: ${{vars.MAIL_TO}}
