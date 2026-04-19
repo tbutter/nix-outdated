@@ -28,7 +28,12 @@ func main() {
 		os.Exit(1)
 	}
 	defer resultFile.Close()
-
+	resultNoPRFile, err := os.Create("result-nopr.txt")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating result-nopr.txt: %v\n", err)
+		os.Exit(1)
+	}
+	defer resultNoPRFile.Close()
 	prTitles, err := getNixpkgsPRTitles()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error fetching PR titles: %v\n", err)
@@ -108,6 +113,9 @@ func main() {
 					}
 					if !hasDifferentMaintainer {
 						fmt.Fprintf(resultFile, "Project: %s | Package: %s | Version: %s | has PR: %v\n", projectName, pkg.Name, pkg.Version, prPackages[projectName])
+						if prPackages[projectName] == "" {
+							fmt.Fprintf(resultNoPRFile, "Project: %s | Package: %s | Version %s", projectName, pkg.Name, pkg.Version)
+						}
 						allPackages = append(allPackages, pkg)
 						count++
 					}

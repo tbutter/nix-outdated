@@ -34,3 +34,19 @@ jobs:
           if-no-files-found: error
           archive: false
 
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v16
+        with:
+          # Specify connection via URL (replaces server_address, server_port, secure,
+          # username and password)
+          #
+          # Format:
+          #
+          #  * smtp://user:password@server:port
+          #  * smtp+starttls://user:password@server:port
+          connection_url: ${{secrets.MAIL_CONNECTION}}
+          subject: nix-outdated
+          from: ${{env.MAIL_FROM}}
+          to: ${{env.MAIL_TO}}
+          body: Please see attachment
+          attachments: results-nopr.txt
