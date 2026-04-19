@@ -2,7 +2,7 @@ name: Run nix-outdated
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs once a day at midnight UTC
+    - cron: '4 0 * * *' # Runs once a day at midnight UTC
   workflow_dispatch: # Allows manual triggering
 
 jobs:
