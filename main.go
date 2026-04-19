@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -22,6 +23,8 @@ type Package struct {
 }
 
 func main() {
+	flag.Parse()
+
 	resultFile, err := os.Create("result.txt")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating result.txt: %v\n", err)
@@ -48,14 +51,22 @@ func main() {
 		prPackages[parts[0]] = title
 	}
 	fmt.Printf("Found %d PRs.\n\n", len(prPackages))
-	fmt.Fprintln(resultFile, "Outdated packages in nix_unstable:")
+	for _, arg := range flag.Args() {
+		runForMaintainer(arg, resultFile, resultNoPRFile, prPackages)
+	}
+}
+
+func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os.File, prPackages map[string]string) {
+	fmt.Fprintf(resultFile, "Outdated packages in nix_unstable by %s:\n", maintainer)
 	fmt.Fprintln(resultFile, "----------------------------------")
+	fmt.Fprintf(resultNoPRFile, "Outdated packages in nix_unstable by %s without PR:\n", maintainer)
+	fmt.Fprintln(resultNoPRFile, "----------------------------------")
 
 	var allPackages []Package
 	count := 0
 	retry := 0
 
-	rurl := "https://repology.org/api/v1/projects/?maintainer=fallback-mnt-nix@repology&inrepo=nix_unstable&outdated=1"
+	rurl := "https://repology.org/api/v1/projects/?maintainer=" + url.QueryEscape(maintainer) + "&inrepo=nix_unstable&outdated=1"
 	for rurl != "" {
 		req, err := http.NewRequest("GET", rurl, nil)
 		if err != nil {
@@ -123,7 +134,7 @@ func main() {
 			}
 		}
 		if len(projects) > 10 {
-			rurl = "https://repology.org/api/v1/projects/" + url.QueryEscape(lastProject) + "/?maintainer=fallback-mnt-nix@repology&inrepo=nix_unstable&outdated=1"
+			rurl = "https://repology.org/api/v1/projects/" + url.QueryEscape(lastProject) + "/?maintainer=" + url.QueryEscape(maintainer) + "&inrepo=nix_unstable&outdated=1"
 		} else {
 			rurl = ""
 		}

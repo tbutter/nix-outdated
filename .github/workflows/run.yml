@@ -22,7 +22,7 @@ jobs:
         run: go build -o nix-outdated main.go
 
       - name: Run the application
-        run: ./nix-outdated
+        run: ./nix-outdated ${{ vars.MAINTAINERS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
