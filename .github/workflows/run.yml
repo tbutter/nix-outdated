@@ -27,10 +27,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload result artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: result-txt
+          name: result.txt
           path: result.txt
+          if-no-files-found: error
+          archive: false
+
+      - name: Upload result nopr artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: result-nopr.txt
+          path: result-nopr.txt
           if-no-files-found: error
           archive: false
 
@@ -42,4 +50,4 @@ jobs:
           from: ${{vars.MAIL_FROM}}
           to: ${{vars.MAIL_TO}}
           body: Please see attachment
-          attachments: results-nopr.txt
+          attachments: result-nopr.txt

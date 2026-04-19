@@ -57,9 +57,9 @@ func main() {
 }
 
 func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os.File, prPackages map[string]string) {
-	fmt.Fprintf(resultFile, "Outdated packages in nix_unstable by %s:\n", maintainer)
+	fmt.Fprintf(resultFile, "\n\nOutdated packages in nix_unstable by %s:\n", maintainer)
 	fmt.Fprintln(resultFile, "----------------------------------")
-	fmt.Fprintf(resultNoPRFile, "Outdated packages in nix_unstable by %s without PR:\n", maintainer)
+	fmt.Fprintf(resultNoPRFile, "\n\nOutdated packages in nix_unstable by %s without PR:\n", maintainer)
 	fmt.Fprintln(resultNoPRFile, "----------------------------------")
 
 	var allPackages []Package
@@ -125,7 +125,7 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 					if !hasDifferentMaintainer {
 						fmt.Fprintf(resultFile, "Project: %s | Package: %s | Version: %s | has PR: %v\n", projectName, pkg.Name, pkg.Version, prPackages[projectName])
 						if prPackages[projectName] == "" {
-							fmt.Fprintf(resultNoPRFile, "Project: %s | Package: %s | Version %s", projectName, pkg.Name, pkg.Version)
+							fmt.Fprintf(resultNoPRFile, "Project: %s | Package: %s | Version %s\n", projectName, pkg.Name, pkg.Version)
 						}
 						allPackages = append(allPackages, pkg)
 						count++
