@@ -67,6 +67,7 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 
 	rurl := "https://repology.org/api/v1/projects/?maintainer=" + url.QueryEscape(maintainer) + "&inrepo=nix_unstable&outdated=1"
 	for rurl != "" {
+		log.Printf("Fetching URL: %s\n", rurl)
 		req, err := http.NewRequest("GET", rurl, nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error creating request: %v\n", err)
@@ -112,7 +113,9 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 		lastProject := ""
 		lastLine := ""
 		for projectName, packages := range projects {
-			lastProject = projectName
+			if strings.Compare(projectName, lastProject) > 0 {
+				lastProject = projectName
+			}
 			for _, pkg := range packages {
 				if pkg.Repo == "nix_unstable" {
 					hasDifferentMaintainer := false
@@ -142,6 +145,7 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 		}
 		if len(projects) > 10 {
 			rurl = "https://repology.org/api/v1/projects/" + url.QueryEscape(lastProject) + "/?maintainer=" + url.QueryEscape(maintainer) + "&inrepo=nix_unstable&outdated=1"
+			time.Sleep(5 * time.Second)
 		} else {
 			rurl = ""
 		}
