@@ -62,7 +62,6 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 	fmt.Fprintf(resultNoPRFile, "\n\nOutdated packages in nix_unstable by %s without PR:\n", maintainer)
 	fmt.Fprintln(resultNoPRFile, "----------------------------------")
 
-	var allPackages []Package
 	count := 0
 	retry := 0
 
@@ -136,7 +135,6 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 							fmt.Fprintln(resultNoPRFile, line)
 							fmt.Fprintln(resultFile, line)
 						}
-						allPackages = append(allPackages, pkg)
 						count++
 					}
 				}
