@@ -15,7 +15,7 @@ import (
 
 type Package struct {
 	Repo        string   `json:"repo"`
-	Name        string   `json:"name"`
+	SrcName     string   `json:"srcname"`
 	Version     string   `json:"version"`
 	Status      string   `json:"status"`
 	VisibleName string   `json:"visiblename"`
@@ -111,6 +111,7 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 		}
 
 		lastProject := ""
+		lastLine := ""
 		for projectName, packages := range projects {
 			lastProject = projectName
 			for _, pkg := range packages {
@@ -123,9 +124,17 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 						}
 					}
 					if !hasDifferentMaintainer {
-						fmt.Fprintf(resultFile, "Project: %s | Package: %s | Version: %s | has PR: %v\n", projectName, pkg.Name, pkg.Version, prPackages[projectName])
-						if prPackages[projectName] == "" {
-							fmt.Fprintf(resultNoPRFile, "Project: %s | Package: %s | Version %s\n", projectName, pkg.Name, pkg.Version)
+						line := fmt.Sprintf("Project: %s | Name: %s | Version %s", projectName, pkg.SrcName, pkg.Version)
+						if lastLine == line {
+							continue
+						}
+						lastLine = line
+						if prPackages[projectName] != "" {
+							line = line + fmt.Sprintf(" | PR: %s", prPackages[projectName])
+							fmt.Fprintln(resultFile, line)
+						} else {
+							fmt.Fprintln(resultNoPRFile, line)
+							fmt.Fprintln(resultFile, line)
 						}
 						allPackages = append(allPackages, pkg)
 						count++

@@ -52,5 +52,5 @@ jobs:
           subject: nix-outdated
           from: ${{vars.MAIL_FROM}}
           to: ${{vars.MAIL_TO}}
-          body: Please see attachment
+          body: List of outdated nix packages.
           attachments: result-nopr.txt
