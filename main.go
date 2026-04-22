@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"maps"
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"time"
 )
@@ -112,7 +114,8 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 
 		lastProject := ""
 		lastLine := ""
-		for projectName, packages := range projects {
+		for _, projectName := range slices.Sorted(maps.Keys(projects)) {
+			packages := projects[projectName]
 			if strings.Compare(projectName, lastProject) > 0 {
 				lastProject = projectName
 			}
