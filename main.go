@@ -123,7 +123,7 @@ func runForMaintainer(maintainer string, resultFile *os.File, resultNoPRFile *os
 				if pkg.Repo == "nix_unstable" {
 					hasDifferentMaintainer := false
 					for _, m := range pkg.Maintainers {
-						if m != "fallback-mnt-nix@repology" {
+						if m != maintainer {
 							hasDifferentMaintainer = true
 							break
 						}
